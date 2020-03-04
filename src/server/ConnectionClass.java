@@ -23,7 +23,7 @@ public class ConnectionClass {
     public byte[] intUDPServer() {
         byte[] data = new byte[30126];
         try {
-            socket = new DatagramSocket(5555);
+            socket = new DatagramSocket(connectionDetails.getPortNumber());
             receivedDataPacket = new DatagramPacket(data, data.length);
             socket.receive(receivedDataPacket);
             data = receivedDataPacket.getData();
@@ -60,7 +60,7 @@ public class ConnectionClass {
     public void sendAckToClient(String status) {
         byte[] ack = status.getBytes();
         try {
-            receiveAckPacket = new DatagramPacket(ack, ack.length, InetAddress.getByName(connectionDetails.getHostName()), connectionDetails.getPortNumber());
+            receiveAckPacket = new DatagramPacket(ack, ack.length, receivedDataPacket.getAddress(), receivedDataPacket.getPort());
             socket.send(receiveAckPacket);
         } catch (IOException e) {
             e.printStackTrace();
