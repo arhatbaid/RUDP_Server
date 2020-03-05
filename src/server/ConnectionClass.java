@@ -18,20 +18,30 @@ public class ConnectionClass {
 
     public ConnectionClass(ConnectionDetails connectionDetails) {
         ConnectionClass.connectionDetails = connectionDetails;
-    }
-
-    public byte[] intUDPServer() {
-        byte[] data = new byte[30126];
         try {
             socket = new DatagramSocket(connectionDetails.getPortNumber());
-            receivedDataPacket = new DatagramPacket(data, data.length);
-            socket.receive(receivedDataPacket);
-            data = receivedDataPacket.getData();
         } catch (IOException e) {
             e.printStackTrace();
-            data = new byte[0];
         }
-        return data;
+    }
+
+    public void receiveDataFromClient() {
+        byte[] data = new byte[64999];
+        int count = 1;
+        byte[] finalImageArray = new byte[130000];
+        while (128535 > 65000 * (count - 1)) {
+            try {
+                receivedDataPacket = new DatagramPacket(data, data.length);
+                socket.receive(receivedDataPacket);
+                data = receivedDataPacket.getData();
+                System.arraycopy(data, 0, finalImageArray, data.length * (count - 1), data.length);
+                count++;
+                writeToFile(finalImageArray);
+            } catch (IOException e) {
+                e.printStackTrace();
+                data = new byte[0];
+            }
+        }
     }
 
     public void writeToFile(byte[] data) {
@@ -47,14 +57,16 @@ public class ConnectionClass {
     }
 
 
-    public void receiveAckFromClient() {
-        byte[] ack = new byte[2];
+    public byte[] receiveAckFromClient() {
+        byte[] ack = new byte[1024];
         sendAckPacket = new DatagramPacket(ack, ack.length);
         try {
             socket.receive(sendAckPacket);
+            return receivedDataPacket.getData();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return new byte[0];
     }
 
     public void sendAckToClient(String status) {

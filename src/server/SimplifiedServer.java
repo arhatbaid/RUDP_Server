@@ -8,13 +8,13 @@ public class SimplifiedServer {
         setServerInfo();
 
         ConnectionClass connectionClass = new ConnectionClass(connectionDetails);
-        byte[] receivedData = connectionClass.intUDPServer();
-        if (receivedData.length > 0) {
+        connectionClass.receiveDataFromClient();
+        /*if (receivedData.length > 0) {
             connectionClass.writeToFile(receivedData);
             connectionClass.sendAckToClient("1");
         } else {
             connectionClass.sendAckToClient("0");
-        }
+        }*/
     }
 
     private static void setServerInfo() {
