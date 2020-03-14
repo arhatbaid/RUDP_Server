@@ -1,5 +1,7 @@
 package server;
 
+import model.ConnectionDetails;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -14,24 +16,22 @@ public class ConnectionClass {
     private static ConnectionDetails connectionDetails = null;
     private static DatagramSocket socket = null;
     private static InetAddress address = null;
-    private static DatagramPacket receivedDataPacket = null, sendAckPacket = null, receiveAckPacket = null;
+    private static DatagramPacket receivedDataPacket = null, sendAckPacket = null;
+    public static final int MAX_BUFFER_SIZE= 65507;
+    private static boolean IS_SERVER_RUNNING= false;
 
     public ConnectionClass(ConnectionDetails connectionDetails) {
         ConnectionClass.connectionDetails = connectionDetails;
     }
 
-    public byte[] intUDPServer() {
-        byte[] data = new byte[30126];
+    public void initConnection() {
         try {
             socket = new DatagramSocket(connectionDetails.getPortNumber());
-            receivedDataPacket = new DatagramPacket(data, data.length);
-            socket.receive(receivedDataPacket);
-            data = receivedDataPacket.getData();
+            IS_SERVER_RUNNING = true;
         } catch (IOException e) {
+            IS_SERVER_RUNNING = false;
             e.printStackTrace();
-            data = new byte[0];
         }
-        return data;
     }
 
     public void writeToFile(byte[] data) {
@@ -46,25 +46,29 @@ public class ConnectionClass {
         }
     }
 
-
-    public void receiveAckFromClient() {
-        byte[] ack = new byte[2];
-        sendAckPacket = new DatagramPacket(ack, ack.length);
+    public byte[] receiveDataFromClient() {
+        byte[] arrData = new byte[MAX_BUFFER_SIZE];
+        receivedDataPacket = new DatagramPacket(arrData, MAX_BUFFER_SIZE);
         try {
-            socket.receive(sendAckPacket);
+            socket.receive(receivedDataPacket);
+            arrData = receivedDataPacket.getData();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return arrData;
     }
 
     public void sendAckToClient(String status) {
-        byte[] ack = status.getBytes();
+        byte[] arrAck = status.getBytes();
         try {
-            receiveAckPacket = new DatagramPacket(ack, ack.length, receivedDataPacket.getAddress(), receivedDataPacket.getPort());
-            socket.send(receiveAckPacket);
+            sendAckPacket = new DatagramPacket(arrAck, arrAck.length, receivedDataPacket.getAddress(), receivedDataPacket.getPort());
+            socket.send(sendAckPacket);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public static boolean isServerRunning() {
+        return IS_SERVER_RUNNING && socket != null;
+    }
 }

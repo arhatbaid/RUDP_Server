@@ -1,17 +1,18 @@
-package server;
+package model;
 
 public class ConnectionDetails {
-    private String hostName;
+
+    private String clientName;
     private int portNumber;
     private String fileName;
     private int noOfPartition;
 
-    public String getHostName() {
-        return hostName;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public int getPortNumber() {
