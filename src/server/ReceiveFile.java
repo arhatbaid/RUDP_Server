@@ -102,27 +102,6 @@ public class ReceiveFile extends JFrame {
                     ImageIcon im = new ImageIcon(new ImageIcon(f.getPath()).getImage().getScaledInstance(img.getWidth(),img.getHeight(),Image.SCALE_SMOOTH));
                     img.setIcon(im);
                     img.setText("This is the received image");
-
-
-//                RenderedImage rendered = null;
-//                if (im instanceof RenderedImage)
-//                {
-//                    rendered = (RenderedImage)im;
-//                }
-//                else
-//                {
-//                    BufferedImage buffered = new BufferedImage(
-//                            im.getIconWidth(),
-//                            im.getIconHeight(),
-//                            BufferedImage.TYPE_INT_RGB
-//                    );
-////                    Graphics2D g = buffered.createGraphics();
-////                    g.drawImage(im, 0, 0, null);
-////                    g.dispose();
-//                    rendered = buffered;
-//                }
-//                ImageIO.write(rendered, "JPEG", new File("image.jpeg"));
-
             }catch(Exception ex){}
         }
     };
