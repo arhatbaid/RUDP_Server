@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class DataTransfer implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;
-    private int client_id = 0;
-    private int seq_no = 0;
-    private final int transmission_type = 3;
-    private int is_last_packet = 0;
+    private int client_id = -1;
+    private int seq_no = -1;
+    private int transmission_type = -1;
+    private int is_last_packet = -1;
 
     public int getClient_id() {
         return client_id;
@@ -25,16 +25,20 @@ public class DataTransfer implements Serializable {
         this.seq_no = seq_no;
     }
 
-    public int getIs_last_packet() {
+    public int isLastPacket() {
         return is_last_packet;
     }
 
-    public void setIs_last_packet(int is_last_packet) {
+    public void setIsLastPacket(int is_last_packet) {
         this.is_last_packet = is_last_packet;
     }
 
-    public int getTransmission_type() {
+    public int getTransmissionType() {
         return transmission_type;
+    }
+
+    public void setTransmissionType(int transmission_type) {
+        this.transmission_type = transmission_type;
     }
 
     @Override
@@ -54,12 +58,5 @@ public class DataTransfer implements Serializable {
                 .toString();
     }
 
-    public byte[] toByte() {
-        byte[] array = new byte[4];
-        array[0] = (byte) client_id;
-        array[1] = (byte) seq_no;
-        array[2] = (byte) transmission_type;
-        array[3] = (byte) is_last_packet;
-        return array;
-    }
+
 }

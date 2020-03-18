@@ -2,20 +2,12 @@ package model;
 
 import java.io.Serializable;
 
-public class EstablishConnection implements Serializable {
+public class PacketAck implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;
-    private int client_id = 0;
-    private int seq_no = 0;
-    private int transmission_type = 0;
-    private long retransmission_timeout = 0;
-
-    public long getRetransmission_timeout() {
-        return retransmission_timeout;
-    }
-
-    public void setRetransmission_timeout(long retransmission_timeout) {
-        this.retransmission_timeout = retransmission_timeout;
-    }
+    private int client_id = -1;
+    private int seq_no = -1;
+    private int transmission_type = -1;
+    private int is_last_packet = -1;
 
     public int getClient_id() {
         return client_id;
@@ -25,21 +17,28 @@ public class EstablishConnection implements Serializable {
         this.client_id = client_id;
     }
 
-
     public int getSeq_no() {
         return seq_no;
-    }
-
-    public int getTransmissionType() {
-        return transmission_type;
     }
 
     public void setSeq_no(int seq_no) {
         this.seq_no = seq_no;
     }
 
+    public int getTransmissionType() {
+        return transmission_type;
+    }
+
     public void setTransmissionType(int transmission_type) {
         this.transmission_type = transmission_type;
+    }
+
+    public int isLastPacket() {
+        return is_last_packet;
+    }
+
+    public void setIsLastPacket(int is_last_packet) {
+        this.is_last_packet = is_last_packet;
     }
 
     @Override
@@ -53,8 +52,8 @@ public class EstablishConnection implements Serializable {
                 .append("transmission_type = ")
                 .append(transmission_type)
                 .append("\n")
-                .append("retransmission_timeout = ")
-                .append(retransmission_timeout)
+                .append("is_last_packet = ")
+                .append(is_last_packet)
                 .append("\n")
                 .toString();
     }

@@ -1,12 +1,26 @@
 package server;
 
-public class Server {
+import model.PacketAck;
+
+public class Server implements ServerImpl.Listener {
 
     private static ServerImpl serverImpl = null;
+    private ServerImpl.Listener listener = this;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         System.out.println("Ready!");
-        serverImpl = new ServerImpl();
+        Server server = new Server();
+        serverImpl = new ServerImpl(server.listener);
+        serverImpl.initServer();
+    }
+
+    @Override
+    public void onServerInitializedSuccessfully() {
         serverImpl.receiveDataFromClient();
+    }
+
+    @Override
+    public void onDataReceivedFromClient(PacketAck packetAck) {
+        serverImpl.sendAckToClient(packetAck);
     }
 }

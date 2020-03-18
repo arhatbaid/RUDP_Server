@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class ImageMetaData implements Serializable {
     private static final long serialVersionUID = 6529685098267757690L;
-    private int client_id = 0;
-    private final int seq_no = 1;
-    private final int transmission_type = 1;
-    private String file_name = "text";
-    private int file_size = 0;
+    private int client_id = -1;
+    private final int seq_no = -1;
+    private int transmission_type = -1;
+    private String file_name = "";
+    private int file_length = -1;
 
     public int getClient_id() {
         return client_id;
@@ -26,20 +26,24 @@ public class ImageMetaData implements Serializable {
         this.file_name = file_name;
     }
 
-    public int getFile_size() {
-        return file_size;
+    public int getFile_length() {
+        return file_length;
     }
 
-    public void setFile_size(int file_size) {
-        this.file_size = file_size;
+    public void setFile_length(int file_length) {
+        this.file_length = file_length;
     }
 
     public int getSeq_no() {
         return seq_no;
     }
 
-    public int getTransmission_type() {
+    public int getTransmissionType() {
         return transmission_type;
+    }
+
+    public void setTransmissionType(int transmission_type) {
+        this.transmission_type = transmission_type;
     }
 
     @Override
@@ -56,26 +60,9 @@ public class ImageMetaData implements Serializable {
                 .append("file_name = ")
                 .append(file_name)
                 .append("\n")
-                .append("file_name = ")
-                .append(file_name)
-                .append("\n")
-                .append("\n")
                 .append("file_size = ")
-                .append(file_size)
+                .append(file_length)
                 .append("\n")
                 .toString();
-    }
-
-    public byte[] toByte() {
-        byte[] array = new byte[50];
-        array[0] = (byte) client_id;
-        array[1] = (byte) seq_no;
-        array[2] = (byte) transmission_type;
-        array[3] = (byte) file_size;
-
-        byte[] arrFileName = file_name.getBytes();
-
-        System.arraycopy(arrFileName, 0, array, 4, arrFileName.length);
-        return array;
     }
 }
