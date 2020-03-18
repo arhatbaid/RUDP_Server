@@ -1,18 +1,13 @@
 package model;
 
-public class ConnectionEstablish {
+import java.io.Serializable;
+
+public class DataTransfer implements Serializable {
+    private static final long serialVersionUID = 6529685098267757690L;
     private int client_id = 0;
     private int seq_no = 0;
-    private int transmission_type = 0;
-    private long retransmission_timeout = 0;
-
-    public long getRetransmission_timeout() {
-        return retransmission_timeout;
-    }
-
-    public void setRetransmission_timeout(long retransmission_timeout) {
-        this.retransmission_timeout = retransmission_timeout;
-    }
+    private final int transmission_type = 3;
+    private int is_last_packet = 0;
 
     public int getClient_id() {
         return client_id;
@@ -22,21 +17,24 @@ public class ConnectionEstablish {
         this.client_id = client_id;
     }
 
-
     public int getSeq_no() {
         return seq_no;
-    }
-
-    public int getTransmission_type() {
-        return transmission_type;
     }
 
     public void setSeq_no(int seq_no) {
         this.seq_no = seq_no;
     }
 
-    public void setTransmission_type(int transmission_type) {
-        this.transmission_type = transmission_type;
+    public int getIs_last_packet() {
+        return is_last_packet;
+    }
+
+    public void setIs_last_packet(int is_last_packet) {
+        this.is_last_packet = is_last_packet;
+    }
+
+    public int getTransmission_type() {
+        return transmission_type;
     }
 
     @Override
@@ -50,8 +48,8 @@ public class ConnectionEstablish {
                 .append("transmission_type = ")
                 .append(transmission_type)
                 .append("\n")
-                .append("retransmission_timeout = ")
-                .append(retransmission_timeout)
+                .append("is_last_packet = ")
+                .append(is_last_packet)
                 .append("\n")
                 .toString();
     }
@@ -61,7 +59,7 @@ public class ConnectionEstablish {
         array[0] = (byte) client_id;
         array[1] = (byte) seq_no;
         array[2] = (byte) transmission_type;
-        array[3] = (byte) retransmission_timeout;
+        array[3] = (byte) is_last_packet;
         return array;
     }
 }

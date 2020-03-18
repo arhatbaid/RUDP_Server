@@ -1,32 +1,33 @@
-package server;
+package network;
 
-import model.ConnectionDetails;
+import model.NetworkData;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class ConnectionClass {
+public class NetworkCalls {
 
-    private static ConnectionDetails connectionDetails = null;
+    private static NetworkData networkData = null;
     private static DatagramSocket socket = null;
     private static InetAddress address = null;
     private static DatagramPacket receivedDataPacket = null, sendAckPacket = null;
     public static final int MAX_BUFFER_SIZE= 65507;
     private static boolean IS_SERVER_RUNNING= false;
 
-    public ConnectionClass(ConnectionDetails connectionDetails) {
-        ConnectionClass.connectionDetails = connectionDetails;
+    public NetworkCalls(NetworkData networkData) {
+        NetworkCalls.networkData = networkData;
     }
 
     public void initConnection() {
         try {
-            socket = new DatagramSocket(connectionDetails.getPortNumber());
+            socket = new DatagramSocket(networkData.getPortNumber());
             IS_SERVER_RUNNING = true;
         } catch (IOException e) {
             IS_SERVER_RUNNING = false;
@@ -46,20 +47,23 @@ public class ConnectionClass {
         }
     }
 
-    public byte[] receiveDataFromClient() {
+    public Object receiveDataFromClient() {
+        Object object = null;
         byte[] arrData = new byte[MAX_BUFFER_SIZE];
         receivedDataPacket = new DatagramPacket(arrData, MAX_BUFFER_SIZE);
         try {
             socket.receive(receivedDataPacket);
             arrData = receivedDataPacket.getData();
-        } catch (IOException e) {
+            ByteArrayInputStream in = new ByteArrayInputStream(arrData);
+            ObjectInputStream is = new ObjectInputStream(in);
+            object = is.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return arrData;
+        return object;
     }
 
-    public void sendAckToClient(String status) {
-        byte[] arrAck = status.getBytes();
+    public void sendAckToClient(byte[] arrAck) {
         try {
             sendAckPacket = new DatagramPacket(arrAck, arrAck.length, receivedDataPacket.getAddress(), receivedDataPacket.getPort());
             socket.send(sendAckPacket);
