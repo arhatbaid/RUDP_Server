@@ -3,15 +3,13 @@ package server;
 import model.*;
 import network.NetworkCalls;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 public class ServerImpl {
     private NetworkData networkData = null;
     private NetworkCalls networkCalls = null;
     private static Listener listener = null;
-
+    public static long FILE_SIZE = 0l;
     public ServerImpl(Listener listener) {
         ServerImpl.listener = listener;
     }
@@ -43,6 +41,7 @@ public class ServerImpl {
                 packetAck.setSeq_no(establishConnection.getSeq_no());
                 packetAck.setTransmissionType(establishConnection.getTransmissionType());
                 System.out.println("EstablishConnection received\n" + receivedObj);
+                listener.onDataReceivedFromClient(packetAck);
                 //TODO save EstablishConnection data on server side
             } else if (receivedObj instanceof ImageMetaData) {
                 ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
@@ -50,6 +49,8 @@ public class ServerImpl {
                 packetAck.setSeq_no(imageMetaData.getSeq_no());
                 packetAck.setTransmissionType(imageMetaData.getTransmissionType());
                 System.out.println("ImageMetaData received\n" + receivedObj);
+                FILE_SIZE = imageMetaData.getFile_length();
+                listener.onDataReceivedFromClient(packetAck);
                 //TODO save ImageMetaData data on server side
             } else if (receivedObj instanceof DataTransfer) {
                 DataTransfer dataTransfer = (DataTransfer) receivedObj;
@@ -58,11 +59,18 @@ public class ServerImpl {
                 packetAck.setTransmissionType(dataTransfer.getTransmissionType());
                 packetAck.setIsLastPacket(dataTransfer.isLastPacket());
                 System.out.println("DataTransfer received\n" + receivedObj);
+                listener.onDataReceivedFromClient(packetAck);
                 //TODO save/update DataTransfer data on server side
             } else {
                 //TODO object corrupt or not identified.
+                File f = new File("Output.jpeg");
+                try {
+                    FileOutputStream fo = new FileOutputStream(f);
+                    networkCalls.receiveTempImage(fo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            listener.onDataReceivedFromClient(packetAck);
         }
     }
 
