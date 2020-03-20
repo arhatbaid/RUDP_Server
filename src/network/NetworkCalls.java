@@ -9,8 +9,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import static server.ServerImpl.FILE_SIZE;
-
 public class NetworkCalls {
 
     private static NetworkData networkData = null;
@@ -80,19 +78,18 @@ public class NetworkCalls {
     }
 
     public void receiveTempImage(FileOutputStream fo) throws IOException {
-        String s = "";
-        byte[] b;
-        for (int i = 0; i < FILE_SIZE; ) {
-            b = new byte[65507];
-            receivedDataPacket = new DatagramPacket(b, 65507);
-            socket.receive(receivedDataPacket);
-            if (receivedDataPacket.getLength() > 0) {
-                i += receivedDataPacket.getLength();
-                fo.write(receivedDataPacket.getData());
-                s = "ACK";
-                receivedDataPacket = new DatagramPacket(s.getBytes(), s.length(), receivedDataPacket.getAddress(), receivedDataPacket.getPort());
-                socket.send(receivedDataPacket);
+        byte[] b = new byte[65507];
+        receivedDataPacket = new DatagramPacket(b, 65507);
+        socket.receive(receivedDataPacket);
+        if (receivedDataPacket.getLength() > 0) {
+//            jpb.setValue(i * 100 / (int) filesize);
+//            jpb.setString(Integer.toString(jpb.getValue()) + " %");
+            fo.write(receivedDataPacket.getData());
+            String s = "ACK";
+            receivedDataPacket = new DatagramPacket(s.getBytes(), s.length(), receivedDataPacket.getAddress(), receivedDataPacket.getPort());
+            socket.send(receivedDataPacket);
             }
-        }
     }
+
+
 }

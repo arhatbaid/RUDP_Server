@@ -10,6 +10,8 @@ public class ServerImpl {
     private NetworkCalls networkCalls = null;
     private static Listener listener = null;
     public static long FILE_SIZE = 0l;
+    File f = new File("Output.jpeg");
+    FileOutputStream fo = null;
     public ServerImpl(Listener listener) {
         ServerImpl.listener = listener;
     }
@@ -56,20 +58,20 @@ public class ServerImpl {
                 DataTransfer dataTransfer = (DataTransfer) receivedObj;
                 packetAck.setClient_id((dataTransfer.getClient_id()));
                 packetAck.setSeq_no(dataTransfer.getSeq_no());
-                packetAck.setTransmissionType(dataTransfer.getTransmissionType());
-                packetAck.setIsLastPacket(dataTransfer.isLastPacket());
+                packetAck.setTransmissionType(dataTransfer.getTransmission_type());
+                packetAck.setIsLastPacket(dataTransfer.getIs_last_packet());
                 System.out.println("DataTransfer received\n" + receivedObj);
-                listener.onDataReceivedFromClient(packetAck);
-                //TODO save/update DataTransfer data on server side
-            } else {
-                //TODO object corrupt or not identified.
-                File f = new File("Output.jpeg");
+
                 try {
-                    FileOutputStream fo = new FileOutputStream(f);
+                    fo = new FileOutputStream(f);
                     networkCalls.receiveTempImage(fo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+//                listener.onDataReceivedFromClient(packetAck);
+                //TODO save/update DataTransfer data on server side
+            } else {
+                //TODO object corrupt or not identified.
             }
         }
     }

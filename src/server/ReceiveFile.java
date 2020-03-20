@@ -65,7 +65,7 @@ public class ReceiveFile extends JFrame {
             String s="";
             try{
                     s="GETPIC";
-                    p=new DatagramPacket(s.getBytes(),s.length(),hostip,33780);
+                    p=new DatagramPacket(s.getBytes(),s.length(),hostip,5555);
                     sock.send(p);
                     b=new byte[65507];
                     p=new DatagramPacket(b,65507);
@@ -91,7 +91,7 @@ public class ReceiveFile extends JFrame {
                             jpb.setString(Integer.toString(jpb.getValue())+" %");
                             fo.write(p.getData());
                             s="ACK";
-                            p=new DatagramPacket(s.getBytes(),s.length(),hostip,33780);
+                            p=new DatagramPacket(s.getBytes(),s.length(),hostip,5555);
                             sock.send(p);
                         }
                     }
