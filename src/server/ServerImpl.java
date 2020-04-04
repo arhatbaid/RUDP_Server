@@ -9,7 +9,7 @@ public class ServerImpl {
     private NetworkData networkData = null;
     private NetworkCalls networkCalls = null;
     private static Listener listener = null;
-    public static long FILE_SIZE = 0l;
+    public static ImageChunksMetaData[]  arrImages = null;
     File f = new File("Output.jpeg");
     FileOutputStream fo = null;
     public ServerImpl(Listener listener) {
@@ -39,19 +39,19 @@ public class ServerImpl {
             PacketAck packetAck = new PacketAck();
             if (receivedObj instanceof EstablishConnection) {
                 EstablishConnection establishConnection = (EstablishConnection) receivedObj;
-                packetAck.setClient_id((establishConnection.getClient_id()));
-                packetAck.setSeq_no(establishConnection.getSeq_no());
+                packetAck.setClient_id((establishConnection.getClientId()));
+                packetAck.setSeq_no(establishConnection.getSeqNo());
                 packetAck.setTransmissionType(establishConnection.getTransmissionType());
                 System.out.println("EstablishConnection received\n" + receivedObj);
                 listener.onDataReceivedFromClient(packetAck);
                 //TODO save EstablishConnection data on server side
             } else if (receivedObj instanceof ImageMetaData) {
                 ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
-                packetAck.setClient_id((imageMetaData.getClient_id()));
-                packetAck.setSeq_no(imageMetaData.getSeq_no());
+                packetAck.setClient_id((imageMetaData.getClientId()));
+                packetAck.setSeq_no(imageMetaData.getSeqNo());
                 packetAck.setTransmissionType(imageMetaData.getTransmissionType());
                 System.out.println("ImageMetaData received\n" + receivedObj);
-                FILE_SIZE = imageMetaData.getFile_length();
+                arrImages = imageMetaData.getArrImageChunks();
                 listener.onDataReceivedFromClient(packetAck);
                 //TODO save ImageMetaData data on server side
             } else if (receivedObj instanceof DataTransfer) {
