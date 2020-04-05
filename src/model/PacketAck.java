@@ -7,7 +7,7 @@ public class PacketAck implements Serializable {
     private int client_id = -1;
     private int seq_no = -1;
     private int transmission_type = -1;
-    private int is_last_packet = -1;
+    private boolean is_last_packet = false;
 
     public int getClient_id() {
         return client_id;
@@ -33,11 +33,11 @@ public class PacketAck implements Serializable {
         this.transmission_type = transmission_type;
     }
 
-    public int isLastPacket() {
+    public boolean isLastPacket() {
         return is_last_packet;
     }
 
-    public void setIsLastPacket(int is_last_packet) {
+    public void setIsLastPacket(boolean is_last_packet) {
         this.is_last_packet = is_last_packet;
     }
 

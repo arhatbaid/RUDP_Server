@@ -36,10 +36,10 @@ public class ImageChunksMetaData implements Serializable {
     public String toString() {
         return new StringBuffer("image_number = ")
                 .append(getImageNo())
-                .append("\n")
+                .append(", ")
                 .append("image_name = ")
                 .append(getImageName())
-                .append("\n")
+                .append(", ")
                 .append("image_size = ")
                 .append(getImageSize())
                 .append("\n")

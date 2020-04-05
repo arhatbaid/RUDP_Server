@@ -17,13 +17,6 @@ public class ServerImpl {
     }
 
 
-    private static NetworkData setNetworkData() {
-        NetworkData networkData = new NetworkData();
-        networkData.setClientName("localhost");
-        networkData.setPortNumber(5555);
-        return networkData;
-    }
-
     protected void initServer() {
         NetworkData networkData = setNetworkData();
         networkCalls = new NetworkCalls(networkData);
@@ -54,6 +47,11 @@ public class ServerImpl {
                 arrImages = imageMetaData.getArrImageChunks();
                 listener.onDataReceivedFromClient(packetAck);
                 //TODO save ImageMetaData data on server side
+                try {
+                    fo = new FileOutputStream(f);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             } else if (receivedObj instanceof DataTransfer) {
                 DataTransfer dataTransfer = (DataTransfer) receivedObj;
                 packetAck.setClient_id((dataTransfer.getClient_id()));
@@ -63,12 +61,14 @@ public class ServerImpl {
                 System.out.println("DataTransfer received\n" + receivedObj);
 
                 try {
-                    fo = new FileOutputStream(f);
-                    networkCalls.receiveTempImage(fo);
+                    fo.write(dataTransfer.getArrImage());
+                    networkCalls.receiveTempImage();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-//                listener.onDataReceivedFromClient(packetAck);
+                if (dataTransfer.getIs_last_packet()) {
+                    listener.onDataReceivedFromClient(packetAck);
+                }
                 //TODO save/update DataTransfer data on server side
             } else {
                 //TODO object corrupt or not identified.
@@ -90,9 +90,16 @@ public class ServerImpl {
     }
 
     interface Listener {
-        void onServerInitializedSuccessfully();
 
+        void onServerInitializedSuccessfully();
         void onDataReceivedFromClient(PacketAck packetAck);
+
+    }
+    private static NetworkData setNetworkData() {
+        NetworkData networkData = new NetworkData();
+        networkData.setClientName("localhost");
+        networkData.setPortNumber(5555);
+        return networkData;
     }
 
 }
