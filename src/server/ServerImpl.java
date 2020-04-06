@@ -58,7 +58,7 @@ public class ServerImpl {
 
                 try {
                     if (dataTransfer.getIsFirstPacketOfImageBlock() == 1) {
-                        f = new File(arrImagesChunkData[dataTransfer.getCurrentImageSeqNo()].getImageName());
+                        f = new File(arrImagesChunkData[dataTransfer.getCurrentImageSeqNo() - 1].getImageName());
                         fo = new FileOutputStream(f);
                     }
                     fo.write(dataTransfer.getArrImage());
