@@ -9,9 +9,10 @@ public class ServerImpl {
     private NetworkData networkData = null;
     private NetworkCalls networkCalls = null;
     private static Listener listener = null;
-    public static ImageChunksMetaData[]  arrImages = null;
-    File f = new File("Output.jpeg");
+    public static ImageChunksMetaData[] arrImagesChunkData = null;
+    File f;
     FileOutputStream fo = null;
+
     public ServerImpl(Listener listener) {
         ServerImpl.listener = listener;
     }
@@ -32,41 +33,40 @@ public class ServerImpl {
             PacketAck packetAck = new PacketAck();
             if (receivedObj instanceof EstablishConnection) {
                 EstablishConnection establishConnection = (EstablishConnection) receivedObj;
-                packetAck.setClient_id((establishConnection.getClientId()));
-                packetAck.setSeq_no(establishConnection.getSeqNo());
+                packetAck.setClientId((establishConnection.getClientId()));
+                packetAck.setSeqNo(establishConnection.getSeqNo());
                 packetAck.setTransmissionType(establishConnection.getTransmissionType());
                 System.out.println("EstablishConnection received\n" + receivedObj);
                 listener.onDataReceivedFromClient(packetAck);
                 //TODO save EstablishConnection data on server side
             } else if (receivedObj instanceof ImageMetaData) {
                 ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
-                packetAck.setClient_id((imageMetaData.getClientId()));
-                packetAck.setSeq_no(imageMetaData.getSeqNo());
+                packetAck.setClientId((imageMetaData.getClientId()));
+                packetAck.setSeqNo(imageMetaData.getSeqNo());
                 packetAck.setTransmissionType(imageMetaData.getTransmissionType());
                 System.out.println("ImageMetaData received\n" + receivedObj);
-                arrImages = imageMetaData.getArrImageChunks();
+                arrImagesChunkData = imageMetaData.getArrImageChunks();
                 listener.onDataReceivedFromClient(packetAck);
                 //TODO save ImageMetaData data on server side
-                try {
-                    fo = new FileOutputStream(f);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
             } else if (receivedObj instanceof DataTransfer) {
                 DataTransfer dataTransfer = (DataTransfer) receivedObj;
-                packetAck.setClient_id((dataTransfer.getClient_id()));
-                packetAck.setSeq_no(dataTransfer.getSeq_no());
-                packetAck.setTransmissionType(dataTransfer.getTransmission_type());
-                packetAck.setIsLastPacket(dataTransfer.getIs_last_packet());
+                packetAck.setClientId((dataTransfer.getClientId()));
+                packetAck.setSeqNo(dataTransfer.getSeqNo());
+                packetAck.setTransmissionType(dataTransfer.getTransmissionType());
+                packetAck.setIsLastPacket(dataTransfer.getIsLastPacket());
                 System.out.println("DataTransfer received\n" + receivedObj);
 
                 try {
+                    if (dataTransfer.getIsFirstPacketOfImageBlock() == 1) {
+                        f = new File(arrImagesChunkData[dataTransfer.getCurrentImageSeqNo()].getImageName());
+                        fo = new FileOutputStream(f);
+                    }
                     fo.write(dataTransfer.getArrImage());
                     networkCalls.receiveTempImage();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (dataTransfer.getIs_last_packet()) {
+                if (dataTransfer.getIsLastPacket() == 1) {
                     listener.onDataReceivedFromClient(packetAck);
                 }
                 //TODO save/update DataTransfer data on server side
@@ -92,9 +92,11 @@ public class ServerImpl {
     interface Listener {
 
         void onServerInitializedSuccessfully();
+
         void onDataReceivedFromClient(PacketAck packetAck);
 
     }
+
     private static NetworkData setNetworkData() {
         NetworkData networkData = new NetworkData();
         networkData.setClientName("localhost");
