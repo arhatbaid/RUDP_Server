@@ -1,26 +1,18 @@
-package server;
+package model;
 
-public class ConnectionDetails {
-    private String hostName;
+public class NetworkData {
+
+    private String clientName;
     private int portNumber;
     private String fileName;
     private int noOfPartition;
 
-    private static String ESTABLISH_CONNECTION = "0";
-    private static String SEND_DATA = "1";
-    private static String SEND_META_DATA = "2";
-    private static String SEND_ACK = "3";
-
-    private static String CONNECTED = "4";
-    private static String DISCONNECTED = "5";
-    private static String IS_CONNECTING = "6";
-
-    public String getHostName() {
-        return hostName;
+    public String getClientName() {
+        return clientName;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public int getPortNumber() {
