@@ -1,6 +1,6 @@
-package network;
+package main.java.network;
 
-import model.NetworkData;
+import main.java.model.NetworkData;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

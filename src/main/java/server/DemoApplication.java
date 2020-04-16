@@ -1,23 +1,21 @@
-package server;
+package main.java.server;
 
-import model.PacketAck;
+import main.java.model.PacketAck;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
-
-public class Server implements ServerImpl.Listener {
+@SpringBootApplication
+public class DemoApplication implements ServerImpl.Listener {
 
     private static ServerImpl serverImpl = null;
     private ServerImpl.Listener listener = this;
 
     public static void main(String[] args) {
-        File f = new File("screen_1.jpeg");
-        if (f != null && f.exists()){
-
-        }
-       /* System.out.println("Ready!");
-        Server server = new Server();
+        SpringApplication.run(DemoApplication.class, args);
+        System.out.println("Ready!");
+        DemoApplication server = new DemoApplication();
         serverImpl = new ServerImpl(server.listener);
-        serverImpl.initServer();*/
+        serverImpl.initServer();
     }
 
     @Override
@@ -29,4 +27,5 @@ public class Server implements ServerImpl.Listener {
     public void onDataReceivedFromClient(PacketAck packetAck) {
         serverImpl.sendAckToClient(packetAck);
     }
+
 }

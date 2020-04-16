@@ -1,8 +1,7 @@
-package model;
+package main.java.model;
 
 import java.io.Serializable;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.TimeZone;
 

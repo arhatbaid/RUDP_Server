@@ -1,6 +1,6 @@
-package server;
+package main.java.server;
 
-import model.ImageChunksMetaData;
+import main.java.model.ImageChunksMetaData;
 import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
