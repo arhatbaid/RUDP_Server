@@ -1,7 +1,7 @@
-package main.java.server;
+package server;
 
-import main.java.model.*;
-import main.java.network.NetworkCalls;
+import model.*;
+import network.NetworkCalls;
 
 import java.io.*;
 
@@ -40,7 +40,7 @@ public class ServerImpl {
                 packetAck.setTransmissionType(establishConnection.getTransmissionType());
 //                System.out.println("EstablishConnection received\n" + receivedObj);
                 listener.onDataReceivedFromClient(packetAck);
-                //TODO save EstablishConnection data on main.java.server side
+                //TODO save EstablishConnection data on server side
             } else if (receivedObj instanceof ImageMetaData) {
                 ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
                 packetAck.setClientId((imageMetaData.getClientId()));
@@ -49,7 +49,7 @@ public class ServerImpl {
 //                System.out.println("ImageMetaData received\n" + receivedObj);
                 arrImagesChunkData = imageMetaData.getArrImageChunks();
                 listener.onDataReceivedFromClient(packetAck);
-                //TODO save ImageMetaData data on main.java.server side
+                //TODO save ImageMetaData data on server side
             } else if (receivedObj instanceof DataTransfer) {
                 DataTransfer dataTransfer = (DataTransfer) receivedObj;
                 packetAck.setClientId((dataTransfer.getClientId()));
@@ -71,7 +71,7 @@ public class ServerImpl {
                 if (dataTransfer.getIsLastPacket() == 1) {
                     listener.onDataReceivedFromClient(packetAck);
                 }
-                //TODO save/update DataTransfer data on main.java.server side
+                //TODO save/update DataTransfer data on server side
             } else {
                 //TODO object corrupt or not identified.
             }

@@ -1,6 +1,6 @@
-package main.java.server;
+package server;
 
-import main.java.model.ImageChunksMetaData;
+import model.ImageChunksMetaData;
 import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Controller;
@@ -21,6 +21,7 @@ public class HelloWorld {
     @GetMapping(value = "/image")
     private String getImage(ModelMap model) throws IOException {
         arrImagesChunkData = ServerImpl.getArrImagesChunkData();
+        if(arrImagesChunkData == null || arrImagesChunkData.length == 0) return "No images found";
         for (int i = 0, arrSize = arrImagesChunkData.length; i < arrSize; i++) {
             imageFile = new File(arrImagesChunkData[i].getImageName());
             if (imageFile != null && imageFile.exists()) {

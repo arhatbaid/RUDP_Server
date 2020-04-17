@@ -1,6 +1,6 @@
-package main.java.server;
+package server;
 
-import main.java.model.PacketAck;
+import model.PacketAck;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
