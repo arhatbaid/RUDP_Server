@@ -5,15 +5,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication implements ServerImpl.Listener {
+public class ServerPhantomEye implements ServerImpl.Listener {
 
     private static ServerImpl serverImpl = null;
     private ServerImpl.Listener listener = this;
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(ServerPhantomEye.class, args);
         System.out.println("Ready!");
-        DemoApplication server = new DemoApplication();
+        ServerPhantomEye server = new ServerPhantomEye();
         serverImpl = new ServerImpl(server.listener);
         serverImpl.initServer();
     }

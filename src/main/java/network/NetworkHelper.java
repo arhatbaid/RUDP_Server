@@ -2,14 +2,12 @@ package network;
 
 import model.NetworkData;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class NetworkCalls {
+public class NetworkHelper {
 
     private static NetworkData networkData = null;
     private static DatagramSocket socket = null;
@@ -18,8 +16,8 @@ public class NetworkCalls {
     public static final int MAX_BUFFER_SIZE = 65507;
     private static boolean IS_SERVER_RUNNING = false;
 
-    public NetworkCalls(NetworkData networkData) {
-        NetworkCalls.networkData = networkData;
+    public NetworkHelper(NetworkData networkData) {
+        NetworkHelper.networkData = networkData;
     }
 
     public void initConnection() {
@@ -32,17 +30,6 @@ public class NetworkCalls {
         }
     }
 
-    public void writeToFile(byte[] data) {
-        try {
-            ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            BufferedImage bImage2 = ImageIO.read(bis);
-            ImageIO.write(bImage2, "jpg", new File("output.jpg"));
-            System.out.println("image created");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("image failed");
-        }
-    }
 
     public Object receiveDataFromClient() {
         Object object = null;
@@ -72,12 +59,5 @@ public class NetworkCalls {
     public static boolean isServerRunning() {
         return IS_SERVER_RUNNING && socket != null;
     }
-
-    public void receiveTempImage() throws IOException {
-        String s = "ACK";
-        receivedDataPacket = new DatagramPacket(s.getBytes(), s.length(), receivedDataPacket.getAddress(), receivedDataPacket.getPort());
-        socket.send(receivedDataPacket);
-    }
-
 
 }

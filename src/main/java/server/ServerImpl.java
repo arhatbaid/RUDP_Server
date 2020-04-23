@@ -1,13 +1,13 @@
 package server;
 
 import model.*;
-import network.NetworkCalls;
+import network.NetworkHelper;
 
 import java.io.*;
 
 public class ServerImpl {
     private NetworkData networkData = null;
-    private NetworkCalls networkCalls = null;
+    private NetworkHelper networkHelper = null;
     private static Listener listener = null;
     private static ImageChunksMetaData[] arrImagesChunkData = null;
     File f;
@@ -22,60 +22,66 @@ public class ServerImpl {
 
     protected void initServer() {
         NetworkData networkData = setNetworkData();
-        networkCalls = new NetworkCalls(networkData);
-        networkCalls.initConnection();
+        networkHelper = new NetworkHelper(networkData);
+        networkHelper.initConnection();
         listener.onServerInitializedSuccessfully();
     }
 
     protected void receiveDataFromClient() {
-        while (true) {
-            Object receivedObj = networkCalls.receiveDataFromClient();
-            if (receivedObj == null) return; //TODO Ask for retransmission
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    Object receivedObj = networkHelper.receiveDataFromClient();
+                    if (receivedObj == null) return; //TODO Ask for retransmission
 
-            PacketAck packetAck = new PacketAck();
-            if (receivedObj instanceof EstablishConnection) {
-                EstablishConnection establishConnection = (EstablishConnection) receivedObj;
-                packetAck.setClientId((establishConnection.getClientId()));
-                packetAck.setSeqNo(establishConnection.getSeqNo());
-                packetAck.setTransmissionType(establishConnection.getTransmissionType());
+                    PacketAck packetAck = new PacketAck();
+                    if (receivedObj instanceof EstablishConnection) {
+                        EstablishConnection establishConnection = (EstablishConnection) receivedObj;
+                        packetAck.setClientId((establishConnection.getClientId()));
+                        packetAck.setSeqNo(establishConnection.getSeqNo());
+                        packetAck.setTransmissionType(establishConnection.getTransmissionType());
 //                System.out.println("EstablishConnection received\n" + receivedObj);
-                listener.onDataReceivedFromClient(packetAck);
-                //TODO save EstablishConnection data on server side
-            } else if (receivedObj instanceof ImageMetaData) {
-                ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
-                packetAck.setClientId((imageMetaData.getClientId()));
-                packetAck.setSeqNo(imageMetaData.getSeqNo());
-                packetAck.setTransmissionType(imageMetaData.getTransmissionType());
+                        listener.onDataReceivedFromClient(packetAck);
+                        //TODO save EstablishConnection data on server side
+                    } else if (receivedObj instanceof ImageMetaData) {
+                        ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
+                        packetAck.setClientId((imageMetaData.getClientId()));
+                        packetAck.setSeqNo(imageMetaData.getSeqNo());
+                        packetAck.setTransmissionType(imageMetaData.getTransmissionType());
 //                System.out.println("ImageMetaData received\n" + receivedObj);
-                arrImagesChunkData = imageMetaData.getArrImageChunks();
-                listener.onDataReceivedFromClient(packetAck);
-                //TODO save ImageMetaData data on server side
-            } else if (receivedObj instanceof DataTransfer) {
-                DataTransfer dataTransfer = (DataTransfer) receivedObj;
-                packetAck.setClientId((dataTransfer.getClientId()));
-                packetAck.setSeqNo(dataTransfer.getSeqNo());
-                packetAck.setTransmissionType(dataTransfer.getTransmissionType());
-                packetAck.setIsLastPacket(dataTransfer.getIsLastPacket());
+                        arrImagesChunkData = imageMetaData.getArrImageChunks();
+                        listener.onDataReceivedFromClient(packetAck);
+                        //TODO save ImageMetaData data on server side
+                    } else if (receivedObj instanceof DataTransfer) {
+                        DataTransfer dataTransfer = (DataTransfer) receivedObj;
+                        packetAck.setClientId((dataTransfer.getClientId()));
+                        packetAck.setSeqNo(dataTransfer.getSeqNo());
+                        packetAck.setTransmissionType(dataTransfer.getTransmissionType());
+                        packetAck.setIsLastPacket(dataTransfer.getIsLastPacket());
 //                System.out.println("DataTransfer received\n" + receivedObj);
 
-                try {
-                    if (dataTransfer.getIsFirstPacketOfImageBlock() == 1) {
-                        f = new File(arrImagesChunkData[dataTransfer.getCurrentImageSeqNo() - 1].getImageName());
-                        fo = new FileOutputStream(f);
+                        try {
+                            if (dataTransfer.getIsFirstPacketOfImageBlock() == 1) {
+                                f = new File(arrImagesChunkData[dataTransfer.getCurrentImageSeqNo() - 1].getImageName());
+                                fo = new FileOutputStream(f);
+                            }
+                            fo.write(dataTransfer.getArrImage());
+                            listener.onDataReceivedFromClient(packetAck);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (dataTransfer.getIsLastPacket() == 1) {
+                            listener.onDataReceivedFromClient(packetAck);
+                        }
+                        //TODO save/update DataTransfer data on server side
+                    } else {
+                        //TODO object corrupt or not identified.
                     }
-                    fo.write(dataTransfer.getArrImage());
-                    networkCalls.receiveTempImage();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-                if (dataTransfer.getIsLastPacket() == 1) {
-                    listener.onDataReceivedFromClient(packetAck);
-                }
-                //TODO save/update DataTransfer data on server side
-            } else {
-                //TODO object corrupt or not identified.
             }
-        }
+        }).start();
+
     }
 
     protected void sendAckToClient(PacketAck packetAck) {
@@ -88,7 +94,7 @@ public class ServerImpl {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        networkCalls.sendAckToClient(outputStream.toByteArray());
+        networkHelper.sendAckToClient(outputStream.toByteArray());
     }
 
     public static ImageChunksMetaData[] getArrImagesChunkData() {

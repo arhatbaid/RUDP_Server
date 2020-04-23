@@ -35,14 +35,13 @@
 <body>
 <script> setTimeout(function() {
         location.reload();
-    }, 2000
+    }, 500
 ); </script>
 
 <div class="grid-container">
     <div class="grid-item"><img src="data:image/jpeg;base64,${screen_1}"/></div>
-    <div class="grid-item"><img src="data:image/jpeg;base64,${screen_3}"/></div>
     <div class="grid-item"><img src="data:image/jpeg;base64,${screen_2}"/></div>
-
+    <div class="grid-item"><img src="data:image/jpeg;base64,${screen_3}"/></div>
     <div class="grid-item"><img src="data:image/jpeg;base64,${screen_4}"/></div>
 </div>
 </body>
