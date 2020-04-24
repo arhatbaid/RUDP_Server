@@ -22,7 +22,7 @@ public class ImageController {
     private byte[] arrImage = null;
     private File imageFile = null;
 
-    @GetMapping(value = "/image")
+    @GetMapping(value = "/")
     private String getImage(ModelMap model) throws IOException {
         arrImagesChunkData = ServerImpl.getArrImagesChunkData();
         if(arrImagesChunkData == null || arrImagesChunkData.length == 0) return "No images found";

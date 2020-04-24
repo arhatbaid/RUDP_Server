@@ -9,6 +9,7 @@ public class ServerImpl {
     private NetworkData networkData = null;
     private NetworkHelper networkHelper = null;
     private static Listener listener = null;
+    public static String userName="", password = "";
     private static ImageChunksMetaData[] arrImagesChunkData = null;
     File f;
     FileOutputStream fo = null;
@@ -43,6 +44,8 @@ public class ServerImpl {
                         packetAck.setTransmissionType(establishConnection.getTransmissionType());
 //                System.out.println("EstablishConnection received\n" + receivedObj);
                         listener.onDataReceivedFromClient(packetAck);
+                        userName = establishConnection.getProjectName();
+                        password = establishConnection.getProjectPassword();
                         //TODO save EstablishConnection data on server side
                     } else if (receivedObj instanceof ImageMetaData) {
                         ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
@@ -115,6 +118,8 @@ public class ServerImpl {
         networkData.setPortNumber(5555);
         return networkData;
     }
+
+
 
 
 
