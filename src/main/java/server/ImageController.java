@@ -25,14 +25,17 @@ public class ImageController {
     @GetMapping(value = "/")
     private String getImage(ModelMap model) throws IOException {
         arrImagesChunkData = ServerImpl.getArrImagesChunkData();
-        if(arrImagesChunkData == null || arrImagesChunkData.length == 0) return "No images found";
+//        String [] arimage = new String[]{"screen_1.jpeg","screen_2.jpeg","screen_3.jpeg","screen_4.jpeg","screen_5.jpeg","screen_6.jpeg","screen_7.jpeg","screen_8.jpeg","screen_9.jpeg"};
+        model.put("count",arrImagesChunkData.length);
+        model.put("gridValue",(int)Math.sqrt(arrImagesChunkData.length));
+//        if(arrImagesChunkData == null || arrImagesChunkData.length == 0) return "No images found";
         for (int i = 0, arrSize = arrImagesChunkData.length; i < arrSize; i++) {
             imageFile = new File(arrImagesChunkData[i].getImageName());
             if (imageFile != null && imageFile.exists()) {
                 try (FileInputStream imageInFile = new FileInputStream(imageFile)) {
                     byte imageData[] = new byte[(int) imageFile.length()];
                     imageInFile.read(imageData);
-                    model.put(arrImagesChunkData[i].getImageName().replace(".jpeg", ""), Base64.getEncoder().encodeToString(imageData));
+                    model.put(arrImagesChunkData[i].getImageName().replace(".jpeg",""), Base64.getEncoder().encodeToString(imageData));
                 }
             }
         }
