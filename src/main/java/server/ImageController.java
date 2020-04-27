@@ -1,16 +1,12 @@
 package server;
 
 import model.ImageChunksMetaData;
-import org.apache.commons.io.FileUtils;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -26,8 +22,9 @@ public class ImageController {
     private String getImage(ModelMap model) throws IOException {
         arrImagesChunkData = ServerImpl.getArrImagesChunkData();
 //        String [] arimage = new String[]{"screen_1.jpeg","screen_2.jpeg","screen_3.jpeg","screen_4.jpeg","screen_5.jpeg","screen_6.jpeg","screen_7.jpeg","screen_8.jpeg","screen_9.jpeg"};
-        model.put("count",arrImagesChunkData.length);
-        model.put("gridValue",(int)Math.sqrt(arrImagesChunkData.length));
+        if (arrImagesChunkData == null) return "No images available";
+        model.put("count", arrImagesChunkData.length);
+        model.put("gridValue", (int) Math.sqrt(arrImagesChunkData.length));
 //        if(arrImagesChunkData == null || arrImagesChunkData.length == 0) return "No images found";
         for (int i = 0, arrSize = arrImagesChunkData.length; i < arrSize; i++) {
             imageFile = new File(arrImagesChunkData[i].getImageName());
@@ -35,7 +32,7 @@ public class ImageController {
                 try (FileInputStream imageInFile = new FileInputStream(imageFile)) {
                     byte imageData[] = new byte[(int) imageFile.length()];
                     imageInFile.read(imageData);
-                    model.put(arrImagesChunkData[i].getImageName().replace(".jpeg",""), Base64.getEncoder().encodeToString(imageData));
+                    model.put(arrImagesChunkData[i].getImageName().replace(".jpeg", ""), Base64.getEncoder().encodeToString(imageData));
                 }
             }
         }
