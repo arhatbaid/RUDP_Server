@@ -42,7 +42,7 @@ public class ServerImpl {
                         packetAck.setClientId((establishConnection.getClientId()));
                         packetAck.setSeqNo(establishConnection.getSeqNo());
                         packetAck.setTransmissionType(establishConnection.getTransmissionType());
-//                System.out.println("EstablishConnection received\n" + receivedObj);
+                System.out.println("EstablishConnection received\n");
                         listener.onDataReceivedFromClient(packetAck);
                         userName = establishConnection.getProjectName();
                         password = establishConnection.getProjectPassword();
@@ -52,7 +52,7 @@ public class ServerImpl {
                         packetAck.setClientId((imageMetaData.getClientId()));
                         packetAck.setSeqNo(imageMetaData.getSeqNo());
                         packetAck.setTransmissionType(imageMetaData.getTransmissionType());
-//                System.out.println("ImageMetaData received\n" + receivedObj);
+                System.out.println("ImageMetaData received\n");
                         arrImagesChunkData = imageMetaData.getArrImageChunks();
                         listener.onDataReceivedFromClient(packetAck);
                         //TODO save ImageMetaData data on server side
@@ -62,7 +62,6 @@ public class ServerImpl {
                         packetAck.setSeqNo(dataTransfer.getSeqNo());
                         packetAck.setTransmissionType(dataTransfer.getTransmissionType());
                         packetAck.setIsLastPacket(dataTransfer.getIsLastPacket());
-//                System.out.println("DataTransfer received\n" + receivedObj);
 
                         try {
                             if (dataTransfer.getIsFirstPacketOfImageBlock() == 1) {
@@ -71,6 +70,7 @@ public class ServerImpl {
                             }
                             fo.write(dataTransfer.getArrImage());
                             listener.onDataReceivedFromClient(packetAck);
+                            System.out.println("DataTransfer received\n");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
