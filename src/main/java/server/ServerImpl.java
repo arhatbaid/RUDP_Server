@@ -114,7 +114,7 @@ public class ServerImpl {
 
     private static NetworkData setNetworkData() {
         NetworkData networkData = new NetworkData();
-        networkData.setPortNumber(8080);
+        networkData.setPortNumber(5555);
         return networkData;
     }
 
