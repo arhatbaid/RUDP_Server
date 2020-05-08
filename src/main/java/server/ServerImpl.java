@@ -1,3 +1,4 @@
+/*ServerImpl conatins all the business logic*/
 package server;
 
 import model.*;
@@ -17,9 +18,8 @@ public class ServerImpl {
         ServerImpl.listener = listener;
     }
 
-    public ServerImpl() {
-    }
 
+    /*Init the UDP server*/
     protected void initServer() {
         NetworkData networkData = setNetworkData();
         networkHelper = new NetworkHelper(networkData);
@@ -27,10 +27,12 @@ public class ServerImpl {
         listener.onServerInitializedSuccessfully();
     }
 
+    /*All the requests are handled in a new thread
+    * According to the current state of communication with client server will respond
+    * Current server writes the images when its gets the byte[]*/
     protected void receiveDataFromClient() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+        new Thread(() -> {
+            try {
                 while (true) {
                     Object receivedObj = networkHelper.receiveDataFromClient();
                     if (receivedObj == null) return; //TODO Ask for retransmission
@@ -79,11 +81,14 @@ public class ServerImpl {
                         //TODO object corrupt or not identified.
                     }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }).start();
 
     }
 
+    /*Converting the model to byte array*/
     protected void sendAckToClient(PacketAck packetAck) {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

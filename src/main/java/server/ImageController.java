@@ -1,3 +1,5 @@
+/*This is the spring boot image controller class
+* tis wil be called when the end user hots the URL*/
 package server;
 
 import model.ImageChunksMetaData;
@@ -22,6 +24,9 @@ public class ImageController {
     private byte[] arrImage = null;
     private File imageFile = null;
 
+
+    /*This method will be called when the end user hits teh uRL
+    * It maps the images and image name and sends it to welcome.jsp web page*/
     @GetMapping(value = "/image")
     private String getImage(ModelMap model) throws IOException {
         arrImagesChunkData = ServerImpl.getArrImagesChunkData();
