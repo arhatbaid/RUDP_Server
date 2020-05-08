@@ -10,6 +10,7 @@ public class ServerImpl {
     private NetworkData networkData = null;
     private NetworkHelper networkHelper = null;
     private static Listener listener = null;
+    public static String userName="", password = "";
     private static ImageChunksMetaData[] arrImagesChunkData = null;
     File f;
     FileOutputStream fo = null;
@@ -43,15 +44,17 @@ public class ServerImpl {
                         packetAck.setClientId((establishConnection.getClientId()));
                         packetAck.setSeqNo(establishConnection.getSeqNo());
                         packetAck.setTransmissionType(establishConnection.getTransmissionType());
-//                System.out.println("EstablishConnection received\n" + receivedObj);
+                System.out.println("EstablishConnection received\n");
                         listener.onDataReceivedFromClient(packetAck);
+                        userName = establishConnection.getProjectName();
+                        password = establishConnection.getProjectPassword();
                         //TODO save EstablishConnection data on server side
                     } else if (receivedObj instanceof ImageMetaData) {
                         ImageMetaData imageMetaData = (ImageMetaData) receivedObj;
                         packetAck.setClientId((imageMetaData.getClientId()));
                         packetAck.setSeqNo(imageMetaData.getSeqNo());
                         packetAck.setTransmissionType(imageMetaData.getTransmissionType());
-//                System.out.println("ImageMetaData received\n" + receivedObj);
+                System.out.println("ImageMetaData received\n");
                         arrImagesChunkData = imageMetaData.getArrImageChunks();
                         listener.onDataReceivedFromClient(packetAck);
                         //TODO save ImageMetaData data on server side
@@ -61,7 +64,6 @@ public class ServerImpl {
                         packetAck.setSeqNo(dataTransfer.getSeqNo());
                         packetAck.setTransmissionType(dataTransfer.getTransmissionType());
                         packetAck.setIsLastPacket(dataTransfer.getIsLastPacket());
-//                System.out.println("DataTransfer received\n" + receivedObj);
 
                         try {
                             if (dataTransfer.getIsFirstPacketOfImageBlock() == 1) {
@@ -70,6 +72,7 @@ public class ServerImpl {
                             }
                             fo.write(dataTransfer.getArrImage());
                             listener.onDataReceivedFromClient(packetAck);
+                            System.out.println("DataTransfer received\n");
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -116,10 +119,11 @@ public class ServerImpl {
 
     private static NetworkData setNetworkData() {
         NetworkData networkData = new NetworkData();
-        networkData.setClientName("localhost");
         networkData.setPortNumber(5555);
         return networkData;
     }
+
+
 
 
 
